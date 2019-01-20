@@ -12,33 +12,31 @@ public class LinkedListDeque<T> {
 	}
 
 	private StuffNode sentinel;
-	private StuffNode last;
-	public int size;
+	private int size;
 
 	public LinkedListDeque() {
-		sentinel = new StuffNode(null, sentinel, null);
-		last = sentinel;
+		sentinel = new StuffNode(null, null, null);
+		sentinel.prev = sentinel;
+		sentinel.next = sentinel;
 		size = 0;
 	}
 
 	public void addFirst(T item) {
 		size += 1;
 		sentinel.next = new StuffNode(item, sentinel, sentinel.next);
-		if (last == sentinel)
-		    last = last.next;
-        sentinel.prev = last;
+		sentinel.next.next.prev = sentinel.next;
 	}
 
 	public void addLast(T item) {
 		size += 1;
-		last.next = new StuffNode(item, last, sentinel);
-		last = last.next;
-        sentinel.prev = last;
+        sentinel.prev.next = new StuffNode(item, sentinel.prev, sentinel);
+        sentinel.prev = sentinel.prev.next;
 	} 
 
 	public boolean isEmpty() {
-		if (size == 0)
+		if (size == 0) {
 			return true;
+		}
 		return false;
 	}
 
@@ -51,51 +49,51 @@ public class LinkedListDeque<T> {
 
 		while (p.next != sentinel) {
 		    p = p.next;
-			System.out.print(p.item);
-			System.out.print(' ');
+			System.out.print(p.item + " ");
 		}
 		System.out.println();
 	}
 
 	public T removeFirst() {
-		if (size == 0)
+		if (size == 0) {
 			return null;
+		}
 		size -= 1;
-		StuffNode p = sentinel.next;
-		if (sentinel.next != sentinel.prev)
-		    sentinel.next.next.next = sentinel;
-		sentinel.prev = last;
+		T i = sentinel.next.item;
+		sentinel.next.next.prev = sentinel;
 		sentinel.next = sentinel.next.next;
-		return p.item;
+		return i;
 	}
 
 	public T removeLast() {
-		if (size == 0)
+		if (size == 0) {
 			return null;
+		}
 		size -= 1;
-		StuffNode p = last;
-		last.prev.next = sentinel;
-		last = last.prev;
-		sentinel.prev = last;
-		return p.item;
+		T i = sentinel.prev.item;
+		sentinel.prev.prev.next = sentinel;
+		sentinel.prev = sentinel.prev.prev;
+		return i;
 	}
 
 	public T get(int index) {
-	    StuffNode p = sentinel;
-        int cur = 0;
+		if (index < 0 || index > size - 1) {
+			return null;
+		}
 
-	    while (p.next != sentinel) {
+		StuffNode p = sentinel;
+
+	    while (index >= 0) {
 	        p = p.next;
-	        if (cur == index)
-	            return p.item;
-	        cur += 1;
+	        index -= 1;
         }
-		return null;
+		return p.item;
 	}
 
 	public T getRecursive(int index) {
-	    if (index > size - 1)
-	        return null;
+	    if (index < 0 || index > size - 1) {
+			return null;
+		}
         return getRecursiveHelper(sentinel.next, index);
 	}
 
