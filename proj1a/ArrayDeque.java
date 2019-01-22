@@ -34,7 +34,8 @@ public class ArrayDeque<T> {
         int tempLength = items.length - first;
         if (tempLength < size) {
             System.arraycopy(items, first, a, a.length / 2 - 1, tempLength);
-            System.arraycopy(items, nextLast - 1, a, a.length / 2 - 1 + tempLength, size - tempLength);
+            int left = size - tempLength;
+            System.arraycopy(items, nextLast - 1, a, a.length / 2 - 1 + tempLength, left);
         } else {
             System.arraycopy(items, first, a, a.length / 2 - 1, size);
         }
@@ -90,7 +91,7 @@ public class ArrayDeque<T> {
         first = (first + 1) % items.length;
         nextFirst = (nextFirst + 1) % items.length;
         size -= 1;
-        if ((double)size / items.length < 0.25) {
+        if ((double) size / items.length < 0.25) {
             resizeDown(items.length / 2);
         }
         return x;
@@ -104,7 +105,7 @@ public class ArrayDeque<T> {
         T x = items[nextLast];
         items[nextLast] = null;
         size -= 1;
-        if ((double)size / items.length < 0.25) {
+        if ((double) size / items.length < 0.25) {
             resizeDown(items.length / 2);
         }
         return x;
