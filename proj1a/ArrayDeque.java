@@ -87,7 +87,7 @@ public class ArrayDeque<T> {
         }
         T x = items[first];
         items[first] = null;
-        first = (nextFirst + 1) % items.length;
+        first = (first + 1) % items.length;
         nextFirst = (nextFirst + 1) % items.length;
         size -= 1;
         if (size / items.length < 0.25) {

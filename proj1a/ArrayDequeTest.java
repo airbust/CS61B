@@ -74,9 +74,13 @@ public class ArrayDequeTest {
         System.out.println("Running get test.");
 
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 7; i++) {
             lld1.addLast(i);
         }
+        System.out.println(lld1.removeFirst());
+        lld1.addLast(9);
+        lld1.addLast(10);
+        System.out.println(lld1.removeFirst());
         boolean passed = (lld1.get(7) == 7);
 
         printTestStatus(passed);
