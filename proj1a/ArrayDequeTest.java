@@ -74,18 +74,18 @@ public class ArrayDequeTest {
         System.out.println("Running get test.");
 
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
-        lld1.addFirst(10);
-        lld1.addLast(20);
-        lld1.addFirst(30);
-        boolean passed = (lld1.get(1) == 10);
+        for (int i = 0; i < 8; i++) {
+            lld1.addLast(i);
+        }
+        boolean passed = (lld1.get(7) == 7);
 
         printTestStatus(passed);
     }
 
     public static void main(String[] args) {
         System.out.println("Running tests.\n");
-        addIsEmptySizeTest();
-        addRemoveTest();
+    //    addIsEmptySizeTest();
+    //    addRemoveTest();
         getTest();
     }
 }
