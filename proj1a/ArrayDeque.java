@@ -23,7 +23,7 @@ public class ArrayDeque<T> {
         items = a;
         nextFirst = (items.length / 2 - 1 - 1 + items.length) % items.length;
         first = (nextFirst + 1) % items.length;
-        nextLast = (nextFirst + size) % items.length;
+        nextLast = (nextFirst + size + 1) % items.length;
     }
 
     private void resizeDown(int capacity) {
@@ -39,9 +39,9 @@ public class ArrayDeque<T> {
             System.arraycopy(items, first, a, a.length / 2 - 1, size);
         }
         items = a;
-        nextFirst = (a.length / 2 - 1 - 1 + items.length) % items.length;
+        nextFirst = (items.length / 2 - 1 - 1 + items.length) % items.length;
         first = (nextFirst + 1) % items.length;
-        nextLast = (nextFirst + size) % items.length;
+        nextLast = (nextFirst + size + 1) % items.length;
     }
 
     public void addFirst(T item) {
@@ -90,7 +90,7 @@ public class ArrayDeque<T> {
         first = (first + 1) % items.length;
         nextFirst = (nextFirst + 1) % items.length;
         size -= 1;
-        if (size / items.length < 0.25) {
+        if ((double)size / items.length < 0.25) {
             resizeDown(items.length / 2);
         }
         return x;
@@ -104,7 +104,7 @@ public class ArrayDeque<T> {
         T x = items[nextLast];
         items[nextLast] = null;
         size -= 1;
-        if (size / items.length < 0.25) {
+        if ((double)size / items.length < 0.25) {
             resizeDown(items.length / 2);
         }
         return x;
