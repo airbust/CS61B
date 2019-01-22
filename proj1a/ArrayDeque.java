@@ -8,7 +8,7 @@ public class ArrayDeque<Item> {
         items = (Item[]) new Object[8];
         size = 0;
         front = 0;
-        back = -1;
+        back = 7;
     }
 
     private void resize(int capacity) {
@@ -53,24 +53,30 @@ public class ArrayDeque<Item> {
     }
 
     public Item removeFirst() {
-        Item x = items[front];
-        if (size / items.length < 0.25) {
-            resize(items.length / 2);
+        if (size == 0) {
+            return null;
         }
+        Item x = items[front];
         size -= 1;
         items[front] = null;
         front = (front + 1) % items.length;
+        if (size / items.length < 0.25) {
+            resize(items.length / 2);
+        }
         return x;
     }
 
     public Item removeLast() {
-        Item x = items[back];
-        if (size / items.length < 0.25) {
-            resize(items.length / 2);
+        if (size == 0) {
+            return null;
         }
+        Item x = items[back];
         size -= 1;
         items[back] = null;
         back = (back - 1 + items.length) % items.length;
+        if (size / items.length < 0.25) {
+            resize(items.length / 2);
+        }
         return x;
     }
 
