@@ -98,8 +98,9 @@ public class LinkedListDeque<T> {
 	}
 
 	private T getRecursiveHelper(StuffNode p, int index) {
-	    if (index == 0)
-	        return p.item;
+	    if (index == 0) {
+			return p.item;
+		}
 	    return getRecursiveHelper(p.next, index - 1);
     }
 }

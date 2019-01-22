@@ -1,38 +1,63 @@
-public class ArrayDeque<Item> {
-    private Item[] items;
+public class ArrayDeque<T> {
+    private T[] items;
     private int size;
-    private int front;
-    private int back;
+    private int nextFirst;
+    private int nextLast;
 
     public ArrayDeque() {
-        items = (Item[]) new Object[8];
+        items = (T[]) new Object[8];
         size = 0;
-        front = 0;
-        back = 7;
+        nextFirst = (items.length - size) / 2;
+        nextLast = nextFirst + 1;
     }
 
     private void resize(int capacity) {
-        Item[] a = (Item[]) new Object[capacity];
-        System.arraycopy(items, 0, a, 0, size);
+        T[] a = (T[]) new Object[capacity];
+        int first = (nextFirst + 1) % items.length;
+        int tempLength = items.length - first;
+        System.arraycopy(items, first, a, a.length / 2 - 1, tempLength);
+        if (tempLength != items.length) {
+            System.arraycopy(items, 0, a, a.length / 2 - 1 + tempLength, first);
+        }
         items = a;
+        nextFirst = (items.length / 2 - 1 - 1 + items.length) % items.length;
+        nextLast = (nextFirst + size) % items.length;
     }
 
-    public void addFirst(Item item) {
+    private void resizeDown(int capacity) {
+        if (capacity < 8) {
+            return;
+        }
+        T[] a = (T[]) new Object[capacity];
+        int first = (nextFirst + 1) % items.length;
+        int tempLength = items.length - first;
+        if (tempLength < size) {
+            System.arraycopy(items, first, a, a.length / 2 - 1, tempLength);
+            System.arraycopy(items, nextLast - 1, a, a.length / 2 - 1 + tempLength, size - tempLength);
+        } else {
+            System.arraycopy(items, first, a, a.length / 2 - 1, size);
+        }
+        items = a;
+        nextFirst = (a.length / 2 - 1 - 1 + items.length) % items.length;
+        nextLast = (nextFirst + size) % items.length;
+    }
+
+    public void addFirst(T item) {
         if (size == items.length) {
             resize(2 * items.length);
         }
         size += 1;
-        front = (front - 1 + items.length) % items.length;
-        items[front] = item;
+        items[nextFirst] = item;
+        nextFirst = (nextFirst - 1 + items.length) % items.length;
     }
 
-    public void addLast(Item item) {
+    public void addLast(T item) {
         if (size == items.length) {
             resize(2 * items.length);
         }
         size += 1;
-        back = (back + 1) % items.length;
-        items[back] = item;
+        items[nextLast] = item;
+        nextLast = (nextLast + 1) % items.length;
     }
 
     public boolean isEmpty() {
@@ -44,47 +69,45 @@ public class ArrayDeque<Item> {
     }
 
     public void printDeque() {
-        int i = front;
-        while (i != back) {
-            System.out.print(items[i] + " ");
-            i = (i + 1) % items.length;
+        for (int i = 0; i < size; i++) {
+            System.out.print(get(i) + " ");
         }
-        System.out.println(items[i]);
+        System.out.println();
     }
 
-    public Item removeFirst() {
+    public T removeFirst() {
         if (size == 0) {
             return null;
         }
-        Item x = items[front];
+        nextFirst = (nextFirst + 1) % items.length;
+        T x = items[nextFirst];
+        items[nextFirst] = null;
         size -= 1;
-        items[front] = null;
-        front = (front + 1) % items.length;
         if (size / items.length < 0.25) {
-            resize(items.length / 2);
+            resizeDown(items.length / 2);
         }
         return x;
     }
 
-    public Item removeLast() {
+    public T removeLast() {
         if (size == 0) {
             return null;
         }
-        Item x = items[back];
+        nextLast = (nextLast - 1 + items.length) % items.length;
+        T x = items[nextLast];
+        items[nextLast] = null;
         size -= 1;
-        items[back] = null;
-        back = (back - 1 + items.length) % items.length;
         if (size / items.length < 0.25) {
-            resize(items.length / 2);
+            resizeDown(items.length / 2);
         }
         return x;
     }
 
-    public Item get(int index) {
+    public T get(int index) {
         if (index < 0 || index > size - 1) {
             return null;
         }
-        index += front;
+        index += (nextFirst + 1) % items.length;
         return items[index % items.length];
     }
 }
