@@ -7,18 +7,17 @@ public class TestArrayDequeGold {
         StudentArrayDeque<Integer> sad = new StudentArrayDeque<Integer>();
         ArrayDequeSolution<Integer> ads = new ArrayDequeSolution<Integer>();
 
+        String message = "";
         for (int i = 0; i < 10; i++) {
-            int tmp = StdRandom.uniform(1000);
-            int tmp1 = StdRandom.uniform(100);
-            sad.addLast(tmp);
-            ads.addLast(tmp);
-            sad.addLast(tmp1);
-            ads.addLast(tmp1);
-
-            String message = "addLast(" + tmp + ")\naddLast(" + tmp1 + ")\nremoveFirst()\n";
-            assertEquals(message, ads.removeFirst(), sad.removeFirst());
+            sad.addLast(i);
+            ads.addLast(i);
+            message += "addLast(" + i + ")\naddLast(" + i + ")\n";
         }
 
+        for (int i = 0; i < 5; i++) {
+            message += "removeLast()\n";
+            assertEquals(message, ads.removeLast(), sad.removeLast());
+        }
     }
 
 }
