@@ -128,10 +128,10 @@ public class Percolation {
     private void unionRight(int row, int col) {
         try {
             if (isOpen(row, col + 1)) {
-                    int coord = xyTo1D(row, col);
-                    int coord1 = xyTo1D(row, col + 1);
-                    unionSet.union(coord, coord1);
-                    unionSetNoBot.union(coord, coord1);
+                int coord = xyTo1D(row, col);
+                int coord1 = xyTo1D(row, col + 1);
+                unionSet.union(coord, coord1);
+                unionSetNoBot.union(coord, coord1);
             }
         } catch (IndexOutOfBoundsException e) {
             return;
