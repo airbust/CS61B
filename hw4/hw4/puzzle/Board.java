@@ -114,8 +114,13 @@ public class Board implements WorldState {
 
         Board that = (Board) y;
 
-        for (int i = 0; i < size; i += 1) {
-            for (int j = 0; j < size; j += 1) {
+        /* can be different sizes */
+        if (this.size != that.size) {
+            return false;
+        }
+
+        for (int i = 0; i < this.size; i += 1) {
+            for (int j = 0; j < this.size; j += 1) {
                 if (this.tileAt(i, j) != that.tileAt(i, j)) {
                     return false;
                 }
