@@ -100,26 +100,33 @@ public class Board implements WorldState {
         return manhattan();
     }
 
+    @Override
     public boolean equals(Object y) {
-        if (y == null) {
-            return false;
-        }
         if (this == y) {
             return true;
         }
-        if (this.getClass() == y.getClass()) {
-            Board that = (Board) y;
+        if (y == null) {
+            return false;
+        }
+        if (this.getClass() != y.getClass()) {
+            return false;
+        }
 
-            for (int i = 0; i < size; i += 1) {
-                for (int j = 0; j < size; j += 1) {
-                    if (this.tileAt(i, j) != that.tileAt(i, j)) {
-                        return false;
-                    }
+        Board that = (Board) y;
+
+        for (int i = 0; i < size; i += 1) {
+            for (int j = 0; j < size; j += 1) {
+                if (this.tileAt(i, j) != that.tileAt(i, j)) {
+                    return false;
                 }
             }
-            return true;
         }
-        return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return 1;
     }
 
     /** Returns the string representation of the board. 
@@ -130,7 +137,7 @@ public class Board implements WorldState {
         s.append(N + "\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                s.append(String.format("%2d ", tileAt(i,j)));
+                s.append(String.format("%2d ", tileAt(i, j)));
             }
             s.append("\n");
         }
