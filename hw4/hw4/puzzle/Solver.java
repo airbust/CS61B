@@ -38,13 +38,13 @@ public class Solver {
 
     public Solver(WorldState initial) {
         path = new Stack<>();
-        MinPQ<SearchNode> PQ = new MinPQ<>();
-        PQ.insert(new SearchNode(initial, 0, null));
+        MinPQ<SearchNode> pq = new MinPQ<>();
+        pq.insert(new SearchNode(initial, 0, null));
 
         SearchNode goal = null;
 
-        while (!PQ.isEmpty()) {
-            SearchNode min = PQ.delMin();
+        while (!pq.isEmpty()) {
+            SearchNode min = pq.delMin();
             WorldState minWS = min.world();
             int minMoves = min.moves();
             SearchNode prev = min.prev();
@@ -54,7 +54,7 @@ public class Solver {
             }
             for (WorldState s : minWS.neighbors()) {
                 if (prev == null || !s.equals(prev.world())) {
-                    PQ.insert(new SearchNode(s, minMoves + 1, min));
+                    pq.insert(new SearchNode(s, minMoves + 1, min));
                 }
             }
         }
