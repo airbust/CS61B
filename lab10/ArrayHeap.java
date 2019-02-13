@@ -41,9 +41,6 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      * Returns the index of the node that is the parent of the node at i.
      */
     private static int parentIndex(int i) {
-        if (i == 1) {
-            return 1;
-        }
         return i / 2;
     }
 
@@ -120,13 +117,16 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
 
-        if (!inBounds(2 * index)) {
-            return;
-        }
-        int childindex = min(2 * index, 2 * index + 1);
-        if (min(index, childindex) != index) {
-            swap(index, childindex);
-            sink(childindex);
+        while (2 * index <= size) {
+            int j = 2 * index;
+            if (j < size && min(j, j + 1) != j) {
+                j += 1;
+            }
+            if (min(index, j) == index) {
+                break;
+            }
+            swap(index, j);
+            index = j;
         }
     }
 
@@ -170,7 +170,10 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         swap(1, size);
         contents[size] = null;
         size -= 1;
-        sink(1);
+        // to ensure valid sink arg
+        if (size > 0) {
+            sink(1);
+        }
         return minItem;
     }
 
