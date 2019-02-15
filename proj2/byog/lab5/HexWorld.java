@@ -1,4 +1,5 @@
 package byog.lab5;
+import javafx.geometry.Pos;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -12,11 +13,12 @@ import java.util.Random;
  * Draws a world consisting of hexagonal regions.
  */
 public class HexWorld {
-    private static final int WIDTH = 20;
-    private static final int HEIGHT = 20;
+    /* @Source: Josh Hug */
+    private static final int WIDTH = 80;
+    private static final int HEIGHT = 50;
 
     private static final long SEED = 2873123;
-    private static final Random RANDOM = new Random(SEED);
+    private static Random RANDOM = new Random(SEED);
 
     public static class Position {
         public int x;
@@ -66,6 +68,55 @@ public class HexWorld {
         }
     }
 
+    public static void drawRandomVerticalHexes(TETile[][] world, Position p, int s, int N) {
+        Position nextp = new Position(p.x, p.y);
+        for (int i = 0; i < N; i += 1) {
+            addHexagon(world, nextp, s, randomTile());
+            nextp.y += 2 * s;
+        }
+    }
+
+    public static void drawTesselationofHexagons(TETile[][] world, Position p, int s) {
+        Position nextp = new Position(p.x, p.y);
+        int xOffset = xOffset(s);
+        for (int i = 0; i < 5; i += 1) {
+            drawRandomVerticalHexes(world, nextp, s, hexagonNum(i));
+            nextp.x += xOffset;
+            nextp.y += yOffset(s, i + 1);
+        }
+    }
+
+    private static int hexagonNum(int i) {
+        int N = i + 3;
+        if (i > 2) {
+            N = 10 - N;
+        }
+        return N;
+    }
+
+    private static int xOffset(int s) {
+        return 2 * s + hexRowOffset(s, 0) - 1;
+    }
+
+    private static int yOffset(int s, int i) {
+        int yOff = s;
+        if (i > 2) {
+            return yOff;
+        }
+        return -yOff;
+    }
+
+    private static TETile randomTile() {
+        int tileNum = RANDOM.nextInt(4);
+        switch (tileNum) {
+            case 0: return Tileset.FLOWER;
+            case 1: return Tileset.GRASS;
+            case 2: return Tileset.MOUNTAIN;
+            case 3: return Tileset.SAND;
+            default: return Tileset.TREE;
+        }
+    }
+
     @Test
     public void testHexRowWidth() {
         assertEquals(3, hexRowWidth(3, 5));
@@ -99,14 +150,15 @@ public class HexWorld {
         ter.initialize(WIDTH, HEIGHT);
 
         TETile[][] world = new TETile[WIDTH][HEIGHT];
-        Position p = new Position(3, 3);
+        Position p = new Position(3, 10);
         for (int x = 0; x < WIDTH; x += 1) {
             for (int y = 0; y < HEIGHT; y += 1) {
                 world[x][y] = Tileset.NOTHING;
             }
         }
-        addHexagon(world, p, 3, Tileset.FLOWER);
-
+//        addHexagon(world, p, 2, Tileset.MOUNTAIN);
+//        drawRandomVerticalHexes(world, p, 2, 3);
+        drawTesselationofHexagons(world, p, 4);
         ter.renderFrame(world);
     }
 }
