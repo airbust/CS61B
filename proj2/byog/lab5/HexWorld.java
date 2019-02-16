@@ -18,7 +18,7 @@ public class HexWorld {
     private static final int HEIGHT = 50;
 
     private static final long SEED = 2873123;
-    private static Random RANDOM = new Random(SEED);
+    private static final Random RANDOM = new Random(SEED);
 
     public static class Position {
         public int x;
@@ -82,7 +82,7 @@ public class HexWorld {
         for (int i = 0; i < 5; i += 1) {
             drawRandomVerticalHexes(world, nextp, s, hexagonNum(i));
             nextp.x += xOffset;
-            nextp.y += yOffset(s, i + 1);
+            nextp.y += yOffset(s, i + 1); // i + 1, not i
         }
     }
 
