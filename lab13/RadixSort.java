@@ -24,7 +24,8 @@ public class RadixSort {
         for (String s : asciis) {
             maxLength = maxLength > s.length() ? maxLength : s.length();
         }
-        String[] sorted = asciis.clone();
+        String[] sorted = new String[asciis.length];
+        System.arraycopy(asciis, 0, sorted, 0, asciis.length);
         for (int d = maxLength - 1; d >= 0; d -= 1) {
             sorted = sortHelperLSD(sorted, d);
         }
@@ -60,13 +61,12 @@ public class RadixSort {
             int place;
             if (s.length() - 1 < index) {
                 place = starts[0];
-                sorted[place] = s;
                 starts[0] += 1;
             } else {
                 place = starts[s.charAt(index)];
-                sorted[place] = s;
                 starts[s.charAt(index)] += 1;
             }
+            sorted[place] = s;
         }
 
         return sorted;
@@ -84,12 +84,70 @@ public class RadixSort {
      **/
     private static void sortHelperMSD(String[] asciis, int start, int end, int index) {
         // Optional MSD helper method for optional MSD radix sort
+        if (end - start <= 1) {
+            return;
+        }
+        int maxLength = Integer.MIN_VALUE;
+        for (int i = start; i < end; i += 1) {
+            maxLength = maxLength > asciis[i].length()
+                    ? maxLength : asciis[i].length();
+        }
+        int[] counts = new int[RADIX];
+        for (int i = start; i < end; i += 1) {
+            if (asciis[i].length() - 1 < index) {
+                counts[0] += 1;
+            } else {
+                counts[asciis[i].charAt(index)] += 1;
+            }
+        }
 
+        int[] starts = new int[RADIX];
+        int pos = 0;
+        for (int i = 0; i < starts.length; i += 1) {
+            starts[i] = pos;
+            pos += counts[i];
+        }
+
+        String[] sorted = new String[asciis.length];
+        for (int i = start; i < end; i += 1) {
+            int place;
+            if (asciis[i].length() - 1 < index) {
+                place = starts[0];
+                starts[0] += 1;
+            } else {
+                place = starts[asciis[i].charAt(index)];
+                starts[asciis[i].charAt(index)] += 1;
+            }
+            sorted[place] = asciis[i];
+        }
+        for (int i = start; i < end; i += 1) {
+            asciis[i] = sorted[i - start];
+        }
+
+        int i = start;
+        while (i < end) {
+            int j = i + 1;
+            while (j < asciis.length &&
+                    asciis[i].charAt(index) == asciis[j].charAt(index)) {
+                j += 1;
+            }
+            sortHelperMSD(asciis, i, j, index + 1);
+            i = j;
+        }
+    }
+
+    public static String[] sortMSD(String[] asciis) {
+        String[] sorted = new String[asciis.length];
+        System.arraycopy(asciis, 0, sorted, 0, asciis.length);
+        sortHelperMSD(sorted, 0, asciis.length, 0);
+        return sorted;
     }
 
     public static void main(String[] args) {
-        String[] str = new String[]{"qwert", "asdf", "zxc"};
+        String[] str = new String[]{"add", "cab", "fad",
+                "fee", "bad", "bee", "fed", "bed", "ace"};
         str = sort(str);
+    //    str = sortMSD(str);
         for (String s : str) {
             System.out.println(s);
         }
