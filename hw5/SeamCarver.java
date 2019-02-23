@@ -34,18 +34,18 @@ public class SeamCarver {
         Color rightColor = picture.get(rightX(x), y);
         Color upColor = picture.get(x, upY(y));
         Color downColor = picture.get(x, downY(y));
-        return Math.pow(leftColor.getRed() - rightColor.getRed(), 2) +
-                Math.pow(leftColor.getGreen() - rightColor.getGreen(), 2) +
-                Math.pow(leftColor.getBlue() - rightColor.getBlue(), 2) +
-                Math.pow(upColor.getRed() - downColor.getRed(), 2) +
-                Math.pow(upColor.getGreen() - downColor.getGreen(), 2) +
-                Math.pow(upColor.getBlue() - upColor.getBlue(), 2);
+        return Math.pow(leftColor.getRed() - rightColor.getRed(), 2)
+                + Math.pow(leftColor.getGreen() - rightColor.getGreen(), 2)
+                + Math.pow(leftColor.getBlue() - rightColor.getBlue(), 2)
+                + Math.pow(upColor.getRed() - downColor.getRed(), 2)
+                + Math.pow(upColor.getGreen() - downColor.getGreen(), 2)
+                + Math.pow(upColor.getBlue() - downColor.getBlue(), 2);
     }
 
     private int leftX(int x) {
         int leftX = x - 1;
         if (leftX < 0) {
-            leftX += width;
+            leftX = width - 1;
         }
         return leftX;
     }
@@ -69,7 +69,7 @@ public class SeamCarver {
     private int downY(int y) {
         int downY = y - 1;
         if (downY < 0) {
-            downY += height;
+            downY = height - 1;
         }
         return downY;
     }
@@ -100,22 +100,23 @@ public class SeamCarver {
 
         for (int i = 0; i < width; i += 1) {
             ArrayList<Integer> tempSeam = new ArrayList<>();
+            int x = i;
             double energy = energy(i, 0);
             tempSeam.add(i);
 
+            double topE = 0, leftE = 0, rightE = 0;
             for (int j = 1; j < height; j += 1) {
-                int top = i;
-                int left = i - 1;
-                int right = i + 1;
-                double topE = energy(top, j - 1);
-                double leftE;
-                double rightE;
+                int top = x;
+                int left = x - 1;
+                int right = x + 1;
+                topE = energy(top, j);
 
                 if (left >= 0) {
                     leftE = energy(left, j);
                 } else {
                     leftE = Double.MAX_VALUE;
                 }
+
                 if (right < width) {
                     rightE = energy(right, j);
                 } else {
@@ -125,14 +126,17 @@ public class SeamCarver {
                 if (leftE <= topE && leftE <= rightE) {
                     energy += leftE;
                     tempSeam.add(left);
+                    x = left;
                 } else {
                     if (topE <= leftE && topE <= rightE) {
                         energy += topE;
                         tempSeam.add(top);
+                        x = top;
                     } else {
                         if (rightE <= leftE && rightE <= topE) {
                             energy += rightE;
                             tempSeam.add(right);
+                            x = right;
                         }
                     }
                 }
