@@ -1,5 +1,4 @@
 import edu.princeton.cs.algs4.Picture;
-import java.util.ArrayList;
 import java.awt.Color;
 
 public class SeamCarver {
@@ -15,7 +14,7 @@ public class SeamCarver {
     }
 
     public Picture picture() {
-        return picture;
+        return new Picture(picture);
     }
 
     public int width() {
@@ -133,8 +132,7 @@ public class SeamCarver {
                         M[i][j] = e[i][j] + Math.min(M[i][j - 1], M[i - 1][j - 1]);
                     } else {
                         M[i][j] = e[i][j]
-                                + Math.min(Math.min(M[i][j - 1]
-                                , M[i - 1][j - 1]), M[i + 1][j - 1]);
+                                + Math.min(Math.min(M[i][j - 1], M[i - 1][j - 1]), M[i + 1][j - 1]);
                     }
                 }
             }
@@ -171,8 +169,7 @@ public class SeamCarver {
                         path[j - 1] = i - 1;
                     }
                 } else {
-                    next = Math.min(Math.min(M[i][j - 1]
-                            , M[i - 1][j - 1]), M[i + 1][j - 1]);
+                    next = Math.min(Math.min(M[i][j - 1], M[i - 1][j - 1]), M[i + 1][j - 1]);
                     if (next == M[i][j - 1]) {
                         path[j - 1] = i;
                     } else {
