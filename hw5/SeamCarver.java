@@ -15,7 +15,7 @@ public class SeamCarver {
     }
 
     public Picture picture() {
-        return new Picture(picture);
+        return picture;
     }
 
     public int width() {
@@ -95,65 +95,84 @@ public class SeamCarver {
     }
 
     public int[] findVerticalSeam() {
-        ArrayList<Integer> seam = new ArrayList<>();
-        double totalEnergy = Double.MAX_VALUE;
-
+        double[][] M = findM();
+        double min = Double.MAX_VALUE;
+        int start = 0;
         for (int i = 0; i < width; i += 1) {
-            ArrayList<Integer> tempSeam = new ArrayList<>();
-            int x = i;
-            double energy = energy(i, 0);
-            tempSeam.add(i);
+            if (M[i][height - 1] < min) {
+                min = M[i][height - 1];
+                start = i;
+            }
+        }
+        return helper(M, start);
+    }
 
-            double topE = 0, leftE = 0, rightE = 0;
-            for (int j = 1; j < height; j += 1) {
-                int top = x;
-                int left = x - 1;
-                int right = x + 1;
-                topE = energy(top, j);
-
-                if (left >= 0) {
-                    leftE = energy(left, j);
+    private double[][] findM() {
+        double[][] e = new double[width][height];
+        for (int i = 0; i < width; i += 1) {
+            for (int j = 0; j < height; j += 1) {
+                e[i][j] = energy(i, j);
+            }
+        }
+        double[][] M = new double[width][height];
+        for (int i = 0; i < width; i += 1) {
+            M[i][0] = e[i][0];
+        }
+        // j should be outside, while i should be inside!
+        for (int j = 1; j < height; j += 1) {
+            for (int i = 0; i < width; i += 1) {
+                if (i == 0) {
+                    M[i][j] = e[i][j] + Math.min(M[i][j-1], M[i+1][j-1]);
                 } else {
-                    leftE = Double.MAX_VALUE;
-                }
-
-                if (right < width) {
-                    rightE = energy(right, j);
-                } else {
-                    rightE = Double.MAX_VALUE;
-                }
-
-                if (leftE <= topE && leftE <= rightE) {
-                    energy += leftE;
-                    tempSeam.add(left);
-                    x = left;
-                } else {
-                    if (topE <= leftE && topE <= rightE) {
-                        energy += topE;
-                        tempSeam.add(top);
-                        x = top;
+                    if (i == width - 1) {
+                        M[i][j] = e[i][j] + Math.min(M[i][j-1], M[i-1][j-1]);
                     } else {
-                        if (rightE <= leftE && rightE <= topE) {
-                            energy += rightE;
-                            tempSeam.add(right);
-                            x = right;
+                        M[i][j] = e[i][j]
+                                + Math.min(Math.min(M[i][j-1], M[i-1][j-1]), M[i+1][j-1]);
+                    }
+                }
+            }
+        }
+        return M;
+    }
+
+    private int[] helper(double[][] M, int i) {
+        double next;
+        int[] path = new int[height];
+        path[height - 1] = i;
+
+        for (int j = height - 1; j >= 1; j -= 1) {
+            if (i == 0) {
+                next = Math.min(M[i][j-1], M[i+1][j-1]);
+                if (next == M[i][j-1]) {
+                    path[j-1] = i;
+                } else {
+                    path[j-1] = i+1;
+                }
+            } else {
+                if (i == width - 1) {
+                    next = Math.min(M[i][j-1], M[i-1][j-1]);
+                    if (next == M[i][j-1]) {
+                        path[j-1] = i;
+                    } else {
+                        path[j-1] = i-1;
+                    }
+                } else {
+                    next = Math.min(Math.min(M[i][j-1], M[i-1][j-1]), M[i+1][j-1]);
+                    if (next == M[i][j-1]) {
+                        path[j-1] = i;
+                    } else {
+                        if (next == M[i-1][j-1]) {
+                            path[j-1] = i-1;
+                        } else {
+                            path[j-1] = i+1;
                         }
                     }
                 }
             }
-
-            if (energy <= totalEnergy) {
-                totalEnergy = energy;
-                seam = tempSeam;
-            }
+            i = path[j-1];
         }
-
-        int[] result = new int[seam.size()];
-        for (int i = 0; i < seam.size(); i += 1) {
-            result[i] = seam.get(i);
-        }
-
-        return result;
+        return path;
     }
 
     public void removeHorizontalSeam(int[] seam) {
