@@ -127,13 +127,14 @@ public class SeamCarver {
         for (int j = 1; j < height; j += 1) {
             for (int i = 0; i < width; i += 1) {
                 if (i == 0) {
-                    M[i][j] = e[i][j] + Math.min(M[i][j-1], M[i+1][j-1]);
+                    M[i][j] = e[i][j] + Math.min(M[i][j - 1], M[i + 1][j - 1]);
                 } else {
                     if (i == width - 1) {
-                        M[i][j] = e[i][j] + Math.min(M[i][j-1], M[i-1][j-1]);
+                        M[i][j] = e[i][j] + Math.min(M[i][j - 1], M[i - 1][j - 1]);
                     } else {
                         M[i][j] = e[i][j]
-                                + Math.min(Math.min(M[i][j-1], M[i-1][j-1]), M[i+1][j-1]);
+                                + Math.min(Math.min(M[i][j - 1]
+                                , M[i - 1][j - 1]), M[i + 1][j - 1]);
                     }
                 }
             }
@@ -155,34 +156,35 @@ public class SeamCarver {
         }
         for (int j = height - 1; j >= 1; j -= 1) {
             if (i == 0) {
-                next = Math.min(M[i][j-1], M[i+1][j-1]);
-                if (next == M[i][j-1]) {
-                    path[j-1] = i;
+                next = Math.min(M[i][j - 1], M[i + 1][j - 1]);
+                if (next == M[i][j - 1]) {
+                    path[j - 1] = i;
                 } else {
-                    path[j-1] = i+1;
+                    path[j - 1] = i + 1;
                 }
             } else {
                 if (i == width - 1) {
-                    next = Math.min(M[i][j-1], M[i-1][j-1]);
-                    if (next == M[i][j-1]) {
-                        path[j-1] = i;
+                    next = Math.min(M[i][j - 1], M[i - 1][j - 1]);
+                    if (next == M[i][j - 1]) {
+                        path[j - 1] = i;
                     } else {
-                        path[j-1] = i-1;
+                        path[j - 1] = i - 1;
                     }
                 } else {
-                    next = Math.min(Math.min(M[i][j-1], M[i-1][j-1]), M[i+1][j-1]);
-                    if (next == M[i][j-1]) {
-                        path[j-1] = i;
+                    next = Math.min(Math.min(M[i][j - 1]
+                            , M[i - 1][j - 1]), M[i + 1][j - 1]);
+                    if (next == M[i][j - 1]) {
+                        path[j - 1] = i;
                     } else {
-                        if (next == M[i-1][j-1]) {
-                            path[j-1] = i-1;
+                        if (next == M[i - 1][j - 1]) {
+                            path[j - 1] = i - 1;
                         } else {
-                            path[j-1] = i+1;
+                            path[j - 1] = i + 1;
                         }
                     }
                 }
             }
-            i = path[j-1];
+            i = path[j - 1];
         }
         return path;
     }
