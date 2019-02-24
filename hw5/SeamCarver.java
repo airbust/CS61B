@@ -6,7 +6,6 @@ public class SeamCarver {
     private int width;
     private int height;
 
-
     public SeamCarver(Picture picture) {
         this.picture = new Picture(picture);
         width = picture.width();
