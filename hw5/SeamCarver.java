@@ -118,6 +118,11 @@ public class SeamCarver {
         for (int i = 0; i < width; i += 1) {
             M[i][0] = e[i][0];
         }
+
+        // Special case : width = 1
+        if (width == 1) {
+            return M;
+        }
         // j should be outside, while i should be inside!
         for (int j = 1; j < height; j += 1) {
             for (int i = 0; i < width; i += 1) {
@@ -141,6 +146,13 @@ public class SeamCarver {
         int[] path = new int[height];
         path[height - 1] = i;
 
+        // Special case : width = 1
+        if (width == 1) {
+            for (int j = height - 1; j >= 1; j -= 1) {
+                path[j - 1] = i;
+            }
+            return path;
+        }
         for (int j = height - 1; j >= 1; j -= 1) {
             if (i == 0) {
                 next = Math.min(M[i][j-1], M[i+1][j-1]);
