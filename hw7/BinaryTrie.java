@@ -31,7 +31,7 @@ public class BinaryTrie implements Serializable {
     public Match longestPrefixMatch(BitSequence querySequence) {
         Node node = root;
 
-        for(int i = 0; i < querySequence.length(); i += 1) {
+        for (int i = 0; i < querySequence.length(); i += 1) {
             if (node.isLeaf()) {
                 return new Match(querySequence.firstNBits(i), node.ch);
             } else {
@@ -52,12 +52,12 @@ public class BinaryTrie implements Serializable {
         return table;
     }
 
-    private void buildLookupTableHelper(Map<Character, BitSequence> table, Node node, String s) {
+    private void buildLookupTableHelper(Map<Character, BitSequence> t, Node node, String s) {
         if (node.isLeaf()) {
-            table.put(node.ch, new BitSequence(s));
+            t.put(node.ch, new BitSequence(s));
         } else {
-            buildLookupTableHelper(table, node.left, s + '0');
-            buildLookupTableHelper(table, node.right, s + '1');
+            buildLookupTableHelper(t, node.left, s + '0');
+            buildLookupTableHelper(t, node.right, s + '1');
         }
     }
 

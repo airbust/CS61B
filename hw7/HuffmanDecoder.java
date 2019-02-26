@@ -26,7 +26,7 @@ public class HuffmanDecoder {
             symbols[i] = match.getSymbol();
             result = result.allButFirstNBits(match.getSequence().length());
         }
-        
+
         FileUtils.writeCharArray(args[1], symbols);
     }
 }
